@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            min-height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        hr{ margin: 3em 0; }
+    </style>
+</head>
+
+<body>
+    <div>
+        <p>TODO LIST</p>
+        <input id="inputText" type="text">
+        <button onclick="add()"> 新增 </button>
+        <div id="list"></div>
+    </div>
+
+    <script>
+        
+        
+        // codata structure
+        const todo = (list) => ({
+            val: () => list,
+            add: str => todo(list.push({do: str})),
+            render: ()=> {
+                document.querySelector('#list').innerHTML = `
+                    <ul>
+                        ${list.map(list => `
+                            <li> 
+                                todo: ${list.do}
+                                time: ${ list.time || new Date().toLocaleString() }
+                            </li>  
+                        `).join('')}
+                    </ul>
+                    `
+            }
+        })
+
+        const todayTodo = todo([
+            { do: '吃早餐', time: '2022/6/14 上午' },
+            { do: '工作', time: '2022/6/14 中午'},
+            { do: '運動',  time: '2022/6/14 下午 15:00'}
+        ])
+
+        todayTodo.render()
+
+        const add = ()=>{
+            todayTodo.add( document.querySelector('#inputText').value )
+            document.querySelector('#inputText').value = ''
+            todayTodo.render()
+        }
+        
+
+
+    </script>
+</body>
+
+</html>
