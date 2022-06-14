@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+    </style>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wrap {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            border: 1px skyblue solid;
+            height: 90vh;
+            max-width: 1000px;
+            margin-top: 20px;
+            padding: 50px;
+        }
+
+        .wrap>div {
+            width: 200px;
+            background-color: skyblue;
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 50px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 200ms linear;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+        <div>5</div>
+        <div>6</div>
+        <div>7</div>
+        <div>8</div>
+        <div>9</div>
+    </div>
+    <script>
+        var wrap = document.querySelector(".wrap")
+
+        // 存放選中的 div
+        var a = []
+        // 預設 order 順序
+        var arr = [...Array(9).keys()]
+
+        // CSS order 
+        function swapOrder(
+            i,
+            j,
+            divs = document.querySelectorAll(".wrap>div")
+        ) {
+            [arr[i], arr[j]] = [arr[j], arr[i]]
+            var order = [...arr]
+            divs.forEach(el=> el.style.order = order.shift())
+        }
+
+        // 點擊事件
+        function clickEvent(e) {
+            if(e.target === wrap) return
+            var index = [].indexOf.call(document.querySelectorAll(".wrap>div"), e.target)
+            a.push(index)
+            if (a.length % 2 === 0) {
+                var i = a[0]
+                var j = a[1]
+                a.length = 0 // 清空
+                swapOrder(i, j)
+            }
+        }
+
+        // 綁定點擊事件
+        wrap.addEventListener('click', clickEvent)
+
+    </script>
+</body>
+
+</html>
