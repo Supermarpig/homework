@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+    </style>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wrap {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            border: 1px skyblue solid;
+            height: 90vh;
+            max-width: 1000px;
+            margin-top: 20px;
+            padding: 50px;
+        }
+
+        .wrap>div {
+            width: 200px;
+            height: 250px;
+            background-color: skyblue;
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 90px;
+            color: skyblue;
+            cursor: pointer;
+            transition: background-color 200ms linear;
+        }
+
+        .wrap>div.destroy {
+            cursor: unset;
+            background-color: white;
+            color: white;
+        }
+
+        .wrap>div.destroy::after {
+            content: '' !important;
+        }
+
+        .open::after {
+            content: attr(data-emoji);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+
+    </div>
+    <script>
+        // 表情符號
+        var emoji = ["🤘", "🤡", "🥰", "🫥", "😎", "🤯"]
+        var wrap = document.querySelector(".wrap")
+        // 存放選中的
+        var box = [] // div
+
+        // 點擊事件
+        function clickEvent(e) {
+            e.target.style = 'background:#e48787;'
+            e.target.classList.add('open')
+            box.push(e.target)
+            if (box.length % 2 === 0) {
+                if (box[0].dataset.emoji === box[1].dataset.emoji) {
+                    var t = setTimeout(() => {
+                        box.forEach(e => {
+                            e.removeEventListener('click', clickEvent)
+                            e.classList.add('destroy')
+                        })
+                        clearTimeout(t)
+                    }, 300)
+                }
+                removeStyle()
+            }
+        }
+        function removeStyle() {
+            var t = setTimeout(() => {
+                box.forEach(e => {
+                    e.classList.remove('open')
+                    e.removeAttribute('style')
+                })
+                box.length = 0
+                clearTimeout(t)
+            }, 800)
+        }
+
+        { // 初始化
+            document.addEventListener('DOMContentLoaded', () => {
+                var doubleEmoji = [...emoji].concat(emoji)
+                doubleEmoji.sort(() => 0.5 - Math.random())
+                doubleEmoji.forEach(el => wrap.innerHTML += `<div data-emoji=${el}></div>`)
+                document.querySelectorAll(".wrap>div").forEach(e => e.addEventListener('click', clickEvent))
+            })
+        }
+    </script>
+</body>
+
+</html>
