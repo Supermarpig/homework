@@ -113,20 +113,17 @@ const watchList = [
 ];
 
 function getRating(watchList) {
-  // 只修改這一行下面的代碼
 
 const averageRating = watchList
-    // Use filter to find films directed by Christopher Nolan
+    // 使用filter查找克里斯托弗·諾蘭導演的電影
     .filter(film => film.Director === "Christopher Nolan")
-    // Use map to convert their ratings from strings to numbers
+    // 使用 map 將他們的評分從字符串轉換為數字
     .map(film => Number(film.imdbRating))
-    // Use reduce to add together their ratings
+    // 使用 reduce 將他們的評分加在一起
     .reduce((sumOfRatings, rating) => sumOfRatings + rating) /
-  // Divide by the number of Nolan films to get the average rating
+  // 除以諾蘭電影的數量得到平均評分
   watchList.filter(film => film.Director === "Christopher Nolan").length;
 
-
-  // 只修改這一行上面的代碼
   return averageRating;
 }
 
