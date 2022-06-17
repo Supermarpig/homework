@@ -1,0 +1,36 @@
+html basic<table> <form> <input>
+
+<form>
+    <label for="username">用户名：</label>
+  <input type="text" name="username" value="请输入用户名" maxlength="6" id="username"> <br>
+    密码：<input type="password"> <br>
+    性别：
+    <label for="nan">男</label>
+    <input type="radio" name="gender" value="男" id="nan">
+    <label for="nv">女</label>
+    <input type="radio" name="gender" value="女" id="nv">
+    <label for="baomi">保密</label>
+    <input type="radio" name="gender" value="保密" checked="checked" id="baomi"> <br>
+    爱好：吃饭<input type="checkbox" name="hobby" value="吃饭"> 睡觉<input type="checkbox" name="hobby" value="睡觉"> 打豆豆<input type="checkbox" name="hobby" value="打豆豆" checked="checked">
+    <br>
+    出生地：
+    <select>
+      <option>火星</option>
+      <option selected="selected">地球</option>
+      <option>木星</option>
+    </select>
+    <br>
+    手机号：<input type="text" maxlength="11" value="输入手机号">
+    <br>
+    验证码：<input type="text" maxlength="4" value="输入验证码">
+    <input type="button" value="获取短信验证码">
+    <br>
+    <label for="file">上传文件：</label>
+    <input type="file" id="file">
+    <br>
+    自我介绍：<textarea cols="20" rows="3"></textarea>
+    <br>
+    <input type="submit" value="提交">
+    <input type="reset" value="重置">
+    
+  </form>
