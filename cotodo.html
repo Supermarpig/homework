@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+    <p>TODO LIST </p>
+    <input id="inputText" type="text">
+    <button onclick="add()">新增</button>
+    <div= id="list"></div>
+    </div>
+
+    <script>
+    
+    //render
+    function render(list){
+        document.querySelector('#list').innerHTML  = `
+                <ul>
+                    ${list.map(list => `
+                        <li>
+                            todo: ${list.do}
+                            time: ${list.time || new Data().toLocaleString()}
+                        </li>
+                    `).join('')}
+                </ul>
+                `
+    }
+    
+
+
+    //codata structure
+    const todo = (list) =>( {
+        render(list)//每次自動執行HOOK
+        return 
+    })
+    
+    let todayTodo = todo([
+        {do '吃早餐' , time: '2022/06/15 上午'},
+        {do '工作' , time: '2022/06/15 中午'},
+        {do '運動' , time: '2022/06/15 下午 15：00'}
+    ])
+    
+    todayTodo.render() //執行副作用 render interface
+
+    const add =() =>{
+        todayTodo.add( document.querySelector('#inputText').value)
+        document.querySelector('#inputText').value = ''
+        todayTodo.render()  //執行副作用 
+    }
+
+    </script>
+</body>
+</html>
