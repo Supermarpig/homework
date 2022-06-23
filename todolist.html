@@ -5,62 +5,118 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>co=todoList</title>
     <style>
-        body{
-            min-height: 500px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        hr{ margin: 3em 0; }
+        *{ box-sizing: content-box; }
+        body { min-height: 500px; display: flex; justify-content: center; align-items: center; }
+        hr { margin: 2em 0; }
+        #searchText{ float: right; }
+        ul { margin-left: -2em; }
+        li{ min-width: 460px; padding: 0.5em; display:table;}
+        li:hover { background-color: azure; }
+        li > b { padding: 0 .5em; width: 150px; display: table-cell; }
+        li > time { padding: 0 1em; color:darkgray; font-size: .8em; }
+        li > span { float: right; opacity: 0;}
+        li:hover  > span{ opacity: 1; }
+        span > i { cursor: pointer; padding: 0 0.5em; }
+        span > i:hover { background-color: black; color: aliceblue; }
+        li.edt { background-color: azure; }
+        li.edt > span { opacity: 1; }
+        [contenteditable="true"]{ outline: 1px solid #2735B6; border-radius: 2px; overflow: hidden; white-space: nowrap; } 
     </style>
 </head>
 
 <body>
-    <div>
+    <div style="min-width: 484px;">
         <p>TODO LIST</p>
+        <input id="searchText" type="search" placeholder=" 搜尋">
         <input id="inputText" type="text">
         <button onclick="add()"> 新增 </button>
+        <hr>
         <div id="list"></div>
     </div>
 
     <script>
-        
-        
-        // codata structure
-        const todo = (list) => ({
-            val: () => list,
-            add: str => todo(list.push({do: str})),
-            render: ()=> {
-                document.querySelector('#list').innerHTML = `
-                    <ul>
-                        ${list.map(list => `
-                            <li> 
-                                todo: ${list.do}
-                                time: ${ list.time || new Date().toLocaleString() }
-                            </li>  
-                        `).join('')}
-                    </ul>
-                    `
-            }
-        })
-
-        const todayTodo = todo([
-            { do: '吃早餐', time: '2022/6/14 上午' },
-            { do: '工作', time: '2022/6/14 中午'},
-            { do: '運動',  time: '2022/6/14 下午 15:00'}
-        ])
-
-        todayTodo.render()
-
-        const add = ()=>{
-            todayTodo.add( document.querySelector('#inputText').value )
-            document.querySelector('#inputText').value = ''
-            todayTodo.render()
+        // 副作用函數 render
+        function render(list) {
+            document.querySelector('#list').innerHTML = `
+                <ul>
+                    ${list.map((list, index) => `
+                        <li i="${index}"> 
+                            <b>${ list.do }</b>
+                            <time>${ list.time || new Date().toLocaleString() }</time>
+                            <span>
+                                <i onclick="edt(this)">E</i>
+                                <i onclick="del(this)">X</i>
+                            </span>
+                        </li>  
+                    `).join('')}
+                </ul>
+            `
         }
-        
 
+        // codata structure
+        const todo = (list) => {
+            const act = (action, payload) => {
+                action === 'add' && (list = [...list, { do: payload }])
+                action === 'edt' && (list[payload.index]['do'] = payload.do)
+                action === 'del' && (list.splice(payload,1))
+                return list
+            }
+            return {
+                req: (action, payload) => todo(act(action, payload)),
+                effc: fn => { fn(list); return todo(list) }
+            }
+        }
+
+        // init 
+        let todayTodo = todo([
+            { do: '吃早餐', time: '2022/6/14 上午' },
+            { do: '工作', time: '2022/6/14 中午' },
+            { do: '運動', time: '2022/6/14 下午 15:00' }
+        ]).effc(render)
+        
+        {   // 外部增刪改邏輯  
+            function add() {
+                const payload = document.querySelector('#inputText').value
+                document.querySelector('#inputText').value = ''
+                todayTodo = todayTodo.req('add', payload).effc(render)
+            }
+            function del(e) {
+                const payload = e.closest('li').getAttribute('i') 
+                todayTodo = todayTodo.req('del', payload).effc(render)
+            }
+            function edt(e) {
+                const pli = e.closest('li')
+                const b = pli.querySelector('b')
+                const index = pli.getAttribute('i') 
+                if(pli.classList.contains('edt')) {
+                    e.innerHTML = 'E'
+                    e.closest('li').classList.remove('edt')
+                    b.contentEditable = 'false'
+                    const payload = b.innerHTML
+                    todayTodo = todayTodo.req('edt', {index, do: payload}).effc(render)
+                } else {
+                    e.innerHTML = 'S'
+                    e.closest('li').classList.add('edt')
+                    b.contentEditable = 'true'
+                }
+            }
+        }
+
+        {   // Search 
+            const searchText = document.querySelector('#searchText')
+            searchText.addEventListener('search',e => search(e.target.value))
+            function search(word){
+                const filter = word.toUpperCase()
+                const li = document.querySelectorAll('li')
+                li.forEach((v, i)=>{
+                    (li[i].querySelector('b').innerText.toUpperCase().indexOf(filter) > -1) 
+                    ? li[i].style.display = "" 
+                    : li[i].style.display = "none"
+                })
+            }
+        }
 
     </script>
 </body>
